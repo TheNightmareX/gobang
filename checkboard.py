@@ -1,3 +1,4 @@
+from colorama import Fore
 from typing import Literal
 
 
@@ -6,7 +7,7 @@ Derections = Literal['left', 'right', 'above', 'below',
 
 
 class Checkboard:
-    CELLS = {'white': '■', 'black': '□', 'blank': '+'}
+    CELLS = {'blue': Fore.BLUE + '+' + Fore.RESET, 'red': Fore.RED + '+' + Fore.RESET, 'blank': '+'}
 
     def __init__(self, rows: int, cols: int):
         assert rows < 100 and cols < 100, 'The max scale is (99,99)'
@@ -15,12 +16,22 @@ class Checkboard:
         self.scale = (rows, cols)
 
     def __repr__(self):
-        # init text with col numbers
-        to_print = f"   {''.join([f'{str(i):2}' for i in range(self.scale[1])])}\n"
-        for (row_i, row) in enumerate(self.checkboard):
-            to_print += f'{str(row_i):>2} '  # row number
+        to_print = ''
+        col_num_max_len = len(str(self.scale[1]))
+        col_nums = [f'{num:>{col_num_max_len}}' for num in range(1, self.scale[1] + 1)]
+        row_num_max_len = len(str(self.scale[0]))
+        row_nums = [f'{num:>{row_num_max_len}}' for num in range(1, self.scale[0] + 1)]
+        for i in range(0, col_num_max_len):
+            to_print += ' ' * (row_num_max_len + 1)
+            for col_num in col_nums:
+                to_print += col_num[i]
+                to_print += ' '
+            to_print += '\n'
+        for i, row in enumerate(self.checkboard):
+            to_print += row_nums[i] + ' '
             for piece in row:
-                to_print += f'{piece} '
+                to_print += piece
+                to_print += ' '
             to_print += '\n'
         return to_print
 
